@@ -20,7 +20,8 @@ app.use(logger);
 //Routes
 app.use("/api/books", require("./Routes/books"));
 app.use("/api/authors", require("./Routes/authors"));
-app.use("/api/auth", require("./Routes/users"));
+app.use("/api/auth", require("./Routes/auth"));
+app.use("/api/users", require("./Routes/users"));
 
 //Error Handler
 app.use(notFound);
