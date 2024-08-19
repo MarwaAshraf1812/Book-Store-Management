@@ -36,7 +36,7 @@ router.put("/:id", verifyTokenAndAuthorization, asyncHandler(
 
 /**
  * @desc Get all users
- * @route /api/auth/register
+ * @route /api/auth/
  * @method GET
  * @Access private (only admin)
  */
@@ -44,6 +44,41 @@ router.get("/", verifyTokenAndAdmin, asyncHandler(
     async (req, res) => {
         const users = await User.find().select("-password");
         res.status(200).json(users);
+    }
+))
+
+/**
+ * @desc Get user by id
+ * @route /api/auth/:id/
+ * @method GET
+ * @Access private (only admin and himself)
+ */
+router.get("/:id", verifyTokenAndAuthorization, asyncHandler(
+    async (req, res) => {
+        const user = await User.findById(req.params.id).select("-password");
+        if(user) {
+            res.status(200).json(user);
+        } else{
+            res.status(404).json({message: "User not found"});
+        }
+    }
+))
+
+/**
+ * @desc delete user by id
+ * @route /api/auth/:id/
+ * @method DELETE
+ * @Access private (only admin and himself)
+ */
+router.delete("/:id", verifyTokenAndAuthorization, asyncHandler(
+    async (req, res) => {
+        const user = await User.findById(req.params.id)
+        if(user) {
+            await User.findByIdAndDelete(req.params.id);
+            res.status(200).json({message: "User has been deleted"});
+        } else{
+            res.status(404).json({message: "User not found"});
+        }
     }
 ))
 
