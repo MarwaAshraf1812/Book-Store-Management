@@ -48,10 +48,10 @@ A comprehensive book store management system built with Node.js and Express. Thi
   - `DELETE /api/books/:id` - Delete a book
 
 - **Authors**
-  - `GET /api/authors` - Retrieve all authors
-  - `POST /api/authors` - Add a new author
-  - `PUT /api/authors/:id` - Update an author
-  - `DELETE /api/authors/:id` - Delete an author
+  - `GET /api/auth/authors` - Retrieve all authors
+  - `POST /api/auth/authors` - Add a new author
+  - `PUT /api/auth/authors/:id` - Update an author
+  - `DELETE /api/auth/authors/:id` - Delete an author
 
 
 ## Technologies Used
