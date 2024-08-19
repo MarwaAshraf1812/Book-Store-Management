@@ -1,16 +1,13 @@
 const express = require("express");
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+const dotenv = require('dotenv').config();
 const logger = require('./middlewares/logger');
 const {errorHandler, notFound}= require('./middlewares/errors');
+const {dbConection} = require('./config/db');
 const app = express();
 
-dotenv.config();
-
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URL)
-    .then(() => console.log('MongoDB connected successfully'))
-    .catch(err => console.error('Error connecting to MongoDB:', err));
+dbConection();
 
 //Middlewares
 app.use(express.json());
