@@ -12,10 +12,23 @@ const {Author, validateCreateAuthor, validateUpdateAuthor} = require("../models/
  */
 router.get("/", asyncHandler(
     async (req, res) => {
-        const authors = await Author.find();
-        res.json(authors);
+        const { name, nationality } = req.query;
+        let filter = {};
+
+        if (name) {
+            filter.$or = [
+                { FirstName: new RegExp(name, 'i') },
+                { LastName: new RegExp(name, 'i') }
+            ];
+        }
+
+        if (nationality) filter.nationality = nationality;
+
+        const authors = await Author.find(filter);
+        res.status(200).json(authors);
     }
 ));
+
 
 /**
  * @desc Get an author by id

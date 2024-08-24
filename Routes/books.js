@@ -5,14 +5,25 @@ const {verifyTokenAndAdmin} = require("../middlewares/verifyToken")
 const {Book, validateCreateBook, validateUpdateBook} = require("../models/Book");
 
 /**
- * @desc Get all books
- * @route /api/books
- * @method GET
- * @ACCESS public
+ * @desc Get all books with optional filtering
+ * @route GET /api/books
+ * @Access Public
  */
 router.get("/", asyncHandler(async (req, res) => {
-    const books = await Book.find().populate("author", ["_id","FirstName","LastName"]);
-    res.json(books);
+    const { maxPrice, minPrice, title, author, cover } = req.query;
+    let filter = {};
+
+    // Add filters based on query parameters
+    if (maxPrice) filter.price = { ...filter.price, $lt: Number(maxPrice) };
+    if (minPrice) filter.price = { ...filter.price, $gt: Number(minPrice) };
+    if (title) filter.title = { $regex: title, $options: "i" }; // Case-insensitive search for title
+    if (author) filter.author = author;
+    if (cover) filter.cover = cover;
+
+    // Fetch filtered books from the database and populate the author field
+    const filteredBooks = await Book.find(filter).populate("author", ["_id", "FirstName", "LastName"]);
+
+    res.status(200).json(filteredBooks);
 }));
 
 /**
