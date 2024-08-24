@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const asyncHandler = require("express-async-handler");
+const {verifyTokenAndAdmin} = require("../middlewares/verifyToken")
 const {Book, validateCreateBook, validateUpdateBook} = require("../models/Book");
 
 /**
@@ -32,9 +33,9 @@ router.get("/:id", asyncHandler(async (req, res) => {
  * @desc Add new book
  * @route /api/books/
  * @method POST
- * @ACCESS public
+ * @ACCESS private (only admin)
  */
-router.post("/", asyncHandler(async (req, res) => {
+router.post("/", verifyTokenAndAdmin, asyncHandler(async (req, res) => {
     const { error } = validateCreateBook(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
@@ -56,9 +57,9 @@ router.post("/", asyncHandler(async (req, res) => {
  * @desc Update a book
  * @route /api/books/:id
  * @method PUT
- * @ACCESS public
+ * @ACCESS private (only admin)
  */
-router.put("/:id", asyncHandler(async (req, res) => {
+router.put("/:id", verifyTokenAndAdmin, asyncHandler(async (req, res) => {
     const { error } = validateUpdateBook(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
@@ -86,9 +87,9 @@ router.put("/:id", asyncHandler(async (req, res) => {
  * @desc Delete a book
  * @route /api/books/:id
  * @method DELETE
- * @ACCESS public
+ * @ACCESS private (only admin)
  */
-router.delete("/:id", asyncHandler(async (req, res) => {
+router.delete("/:id", verifyTokenAndAdmin, asyncHandler(async (req, res) => {
     const deletedBook = await Book.findByIdAndDelete(req.params.id);
     if (deletedBook) {
         res.json({ message: "Book deleted", book: deletedBook });
