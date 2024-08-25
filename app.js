@@ -11,14 +11,17 @@ dbConection();
 
 //Middlewares
 app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 app.use(logger);
 
+app.set("view engine", "ejs");
 
 //Routes
 app.use("/api/books", require("./Routes/books"));
 app.use("/api/authors", require("./Routes/authors"));
 app.use("/api/auth", require("./Routes/auth"));
 app.use("/api/users", require("./Routes/users"));
+app.use("/password", require("./Routes/password"));
 
 //Error Handler
 app.use(notFound);

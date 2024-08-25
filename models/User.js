@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-}, {timestamps: true});
+}, { timestamps: true });
 
 function validateRegisterUser(user) {
     const schema = joi.object({
@@ -56,7 +56,7 @@ function validateLoginUser(user) {
     return schema.validate(user);
 }
 
-UserSchema.methods.generateToken = function() {
+UserSchema.methods.generateToken = function () {
     return jwt.sign({
         id: this._id,
         username: this.username,
@@ -65,7 +65,6 @@ UserSchema.methods.generateToken = function() {
         expiresIn: "4d"
     });
 };
-
 
 const User = mongoose.model("User", UserSchema);
 
