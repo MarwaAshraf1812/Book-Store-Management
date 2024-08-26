@@ -4,10 +4,16 @@ const dotenv = require('dotenv').config();
 const logger = require('./middlewares/logger');
 const {errorHandler, notFound}= require('./middlewares/errors');
 const {dbConection} = require('./config/db');
+const path = require("path");
+
+
 const app = express();
 
 // Connect to MongoDB
 dbConection();
+
+//Static Folder
+app.use(express.static(path.join(__dirname, "images")));
 
 //Middlewares
 app.use(express.json());
@@ -21,6 +27,7 @@ app.use("/api/books", require("./Routes/books"));
 app.use("/api/authors", require("./Routes/authors"));
 app.use("/api/auth", require("./Routes/auth"));
 app.use("/api/users", require("./Routes/users"));
+app.use("/api/upload", require("./Routes/upload"));
 app.use("/password", require("./Routes/password"));
 
 //Error Handler
