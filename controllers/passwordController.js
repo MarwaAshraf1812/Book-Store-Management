@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const { User } = require('../models/User'); // Ensure the correct import
+const { User, validateChangePassword } = require('../models/User'); // Ensure the correct import
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
@@ -66,6 +66,10 @@ module.exports.sendForgotPassword = asyncHandler(async (req, res) => {
  * @Access Public
  */
 module.exports.getResetPassword = asyncHandler(async (req, res) => {
+    const {error} = validateChangePassword(req.body);
+    if (error) {
+        res.status(400).json({message: error.details[0].message });
+    }
     const user = await User.findById(req.params.userId);
     if (!user) {
         res.status(404);
