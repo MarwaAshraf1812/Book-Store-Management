@@ -5,6 +5,8 @@ const logger = require('./middlewares/logger');
 const {errorHandler, notFound}= require('./middlewares/errors');
 const {dbConection} = require('./config/db');
 const path = require("path");
+const helmet = require('helmet');
+const cors = require("cors");
 
 
 const app = express();
@@ -20,6 +22,13 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(logger);
 
+// Helmet
+app.use(helmet());
+
+// CORS
+app.use(cors());
+
+//View Engine
 app.set("view engine", "ejs");
 
 //Routes
