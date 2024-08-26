@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { User } = require('../models/User'); // Ensure the correct import
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
 
 /**
  * @desc Forgot password view
@@ -30,6 +31,31 @@ module.exports.sendForgotPassword = asyncHandler(async (req, res) => {
     });
 
     const resetPasswordLink = `${req.protocol}://${req.get("host")}/password/reset-password/${user._id}/${resetToken}`;
+
+    // Send email
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
+    });
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: "Reset Password",
+        text: `Click on the link to reset your password: ${resetPasswordLink}`,
+    }
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error(error);
+            res.status(500);
+            throw new Error("Email could not be sent");
+        }
+        console.log("Email sent: " + info.response);
+    })
+
 
     res.status(200).json({ message: "Password reset link sent", resetPasswordLink });
 });
